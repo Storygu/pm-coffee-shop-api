@@ -1,12 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { GetAllMenuUseCase } from './usecases/get-all-menu/get-all-menu.usecase';
+import { GetAllMenuResponseDto } from './usecases/get-all-menu/get-all-menu.dto';
 
-@Controller()
+@Controller('menus')
 export class MenuController {
   constructor(private readonly getAllMenus: GetAllMenuUseCase) {}
 
   @Get()
-  getHello(): string {
+  findAll(): Promise<GetAllMenuResponseDto[]> {
     return this.getAllMenus.execute();
   }
 }
