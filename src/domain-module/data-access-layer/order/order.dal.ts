@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { OrderDataLayer } from './order.dl';
 import { OrderEntity } from './order.entity';
 
 @Injectable()
@@ -10,24 +11,41 @@ export class OrderDAL {
     private readonly repository: Repository<OrderEntity>,
   ) {}
 
-  find(options?: FindManyOptions<OrderEntity>): Promise<OrderEntity[]> {
-    return this.repository.find(options);
+  async find(options?: FindManyOptions<OrderDataLayer>): Promise<OrderDataLayer[]> {
+    const entities = await this.repository.find(options as FindManyOptions<OrderEntity>);
+    return entities.map((entity) => this.toDataLayer(entity));
   }
 
-  findOne(options: FindOneOptions<OrderEntity>): Promise<OrderEntity | null> {
-    return this.repository.findOne(options);
+  async findOne(options: FindOneOptions<OrderDataLayer>): Promise<OrderDataLayer | null> {
+    const entity = await this.repository.findOne(options as FindOneOptions<OrderEntity>);
+    return entity ? this.toDataLayer(entity) : null;
   }
 
-  save(entity: Partial<OrderEntity>): Promise<OrderEntity> {
-    return this.repository.save(entity);
+  async save(data: Partial<OrderDataLayer>): Promise<OrderDataLayer> {
+    const entity = await this.repository.save(data as Partial<OrderEntity>);
+    return this.toDataLayer(entity);
   }
 
-  async update(id: number, partial: Partial<OrderEntity>): Promise<OrderEntity | null> {
-    await this.repository.update(id, partial);
-    return this.repository.findOne({ where: { id } });
+  async update(id: number, partial: Partial<OrderDataLayer>): Promise<OrderDataLayer | null> {
+    await this.repository.update(id, partial as Partial<OrderEntity>);
+    const entity = await this.repository.findOne({ where: { id } });
+    return entity ? this.toDataLayer(entity) : null;
   }
 
   async softDelete(id: number): Promise<void> {
     await this.repository.softDelete(id);
+  }
+
+  private toDataLayer(entity: OrderEntity): OrderDataLayer {
+    const dl = new OrderDataLayer();
+    dl.id = entity.id;
+    dl.no = entity.no;
+    dl.price = entity.price;
+    dl.discount = entity.discount;
+    dl.status = entity.status;
+    dl.createdAt = entity.createdAt;
+    dl.updatedAt = entity.updatedAt;
+    dl.deletedAt = entity.deletedAt;
+    return dl;
   }
 }
