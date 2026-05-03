@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { DomainModule } from './domain-module/domain.module';
+import { PresenterModule } from './presenter-module/presenter.module';
 
 @Module({
   imports: [
@@ -25,9 +24,7 @@ import { DomainModule } from './domain-module/domain.module';
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
       }),
     }),
-    DomainModule,
+    PresenterModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
