@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { MenuDAL } from '../data-access-layer/menu/menu.dal';
+import { MenuDataLayer } from '../data-access-layer/menu/menu.dl';
 
 @Injectable()
 export class MenuService {
-  getAllMenus(): string {
-    throw new Error('Method not implemented.');
+  constructor(private readonly menuDAL: MenuDAL) {}
+
+  getAllMenus(): Promise<MenuDataLayer[]> {
+    return this.menuDAL.find();
   }
 }
