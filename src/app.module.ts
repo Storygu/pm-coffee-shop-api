@@ -22,7 +22,6 @@ import { DomainModule } from './domain-module/domain.module';
         synchronize: false,
         logging: false,
         autoLoadEntities: true,
-        entities: [__dirname + '/domain-module/data-access-layer/**/*.entity.{ts,js}'],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
       }),
     }),

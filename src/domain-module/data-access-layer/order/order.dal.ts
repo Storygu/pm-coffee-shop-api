@@ -32,20 +32,21 @@ export class OrderDAL {
     return entity ? this.toDataLayer(entity) : null;
   }
 
-  async softDelete(id: number): Promise<void> {
-    await this.repository.softDelete(id);
+  async softDelete(id: number): Promise<boolean> {
+    const result = await this.repository.softDelete(id);
+    return !!result.affected && result.affected > 0;
   }
 
   private toDataLayer(entity: OrderEntity): OrderDataLayer {
-    const dl = new OrderDataLayer();
-    dl.id = entity.id;
-    dl.no = entity.no;
-    dl.price = entity.price;
-    dl.discount = entity.discount;
-    dl.status = entity.status;
-    dl.createdAt = entity.createdAt;
-    dl.updatedAt = entity.updatedAt;
-    dl.deletedAt = entity.deletedAt;
-    return dl;
+    return {
+      id: entity.id,
+      no: entity.no,
+      price: entity.price,
+      discount: entity.discount,
+      status: entity.status,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      deletedAt: entity.deletedAt,
+    };
   }
 }
