@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CoffeeShop } from './entities/coffee-shop.entity';
 
 @Module({
   imports: [
@@ -22,7 +21,7 @@ import { CoffeeShop } from './entities/coffee-shop.entity';
         synchronize: false,
         logging: false,
         autoLoadEntities: true,
-        entities: [CoffeeShop],
+        entities: [__dirname + '/domain-module/data-access-layer/**/*.entity.{ts,js}'],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
       }),
     }),
