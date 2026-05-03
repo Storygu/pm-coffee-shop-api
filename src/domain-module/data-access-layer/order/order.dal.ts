@@ -1,43 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { BaseDAL } from '../base.dal';
 import { OrderDataLayer } from './order.dl';
 import { OrderEntity } from './order.entity';
 
 @Injectable()
-export class OrderDAL {
+export class OrderDAL extends BaseDAL<OrderEntity, OrderDataLayer> {
   constructor(
     @InjectRepository(OrderEntity)
-    private readonly repository: Repository<OrderEntity>,
-  ) {}
-
-  async find(options?: FindManyOptions<OrderDataLayer>): Promise<OrderDataLayer[]> {
-    const entities = await this.repository.find(options as FindManyOptions<OrderEntity>);
-    return entities.map((entity) => this.toDataLayer(entity));
+    repository: Repository<OrderEntity>,
+  ) {
+    super(repository);
   }
 
-  async findOne(options: FindOneOptions<OrderDataLayer>): Promise<OrderDataLayer | null> {
-    const entity = await this.repository.findOne(options as FindOneOptions<OrderEntity>);
-    return entity ? this.toDataLayer(entity) : null;
-  }
-
-  async save(data: Partial<OrderDataLayer>): Promise<OrderDataLayer> {
-    const entity = await this.repository.save(data as Partial<OrderEntity>);
-    return this.toDataLayer(entity);
-  }
-
-  async update(id: number, partial: Partial<OrderDataLayer>): Promise<OrderDataLayer | null> {
-    await this.repository.update(id, partial as Partial<OrderEntity>);
-    const entity = await this.repository.findOne({ where: { id } });
-    return entity ? this.toDataLayer(entity) : null;
-  }
-
-  async softDelete(id: number): Promise<boolean> {
-    const result = await this.repository.softDelete(id);
-    return !!result.affected && result.affected > 0;
-  }
-
-  private toDataLayer(entity: OrderEntity): OrderDataLayer {
+  protected toDataLayer(entity: OrderEntity): OrderDataLayer {
     return {
       id: entity.id,
       no: entity.no,
