@@ -5,10 +5,8 @@ import { OrderEntity } from './data-access-layer/order/order.entity';
 import { OrderService } from './services/order.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([OrderEntity]),
-  ],
-  providers: [OrderDAL],
-  exports: [OrderDAL],
+  imports: [TypeOrmModule.forFeature([OrderEntity])],
+  providers: [OrderDAL, OrderService],
+  exports: [OrderService],
 })
 export class DomainModule {}
