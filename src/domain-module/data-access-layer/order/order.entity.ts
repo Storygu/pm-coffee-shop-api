@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { OrderStatus } from '../../../type/order.type';
+import { OrderItemEntity } from '../order-item/order-item.entity';
 
 @Entity({ name: 'orders' })
 export class OrderEntity {
@@ -24,6 +26,11 @@ export class OrderEntity {
 
   @Column({ name: 'status', enum: OrderStatus, type: 'enum' })
   status!: OrderStatus;
+
+  @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order, {
+    eager: true,
+  })
+  orderItems!: OrderItemEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
